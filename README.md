@@ -6,7 +6,7 @@ Tidy Tuesday 2020-03-17 - The Office - Words and Numbers
 library(tidyverse)
 theme_set(theme_light())
 
-office_ratings <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-03-17/office_ratings.csv')
+office_ratings <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-03-17/office_ratings.csv")
 ```
 
 ``` r
@@ -17,11 +17,11 @@ office_ratings <- readr::read_csv('https://raw.githubusercontent.com/rfordatasci
 rating?**
 
 ``` r
-most_votes <- 
-    office_ratings |>
-    select(season, title, total_votes) |>
-    arrange(desc(total_votes)) |>
-    head(10)
+most_votes <-
+  office_ratings |>
+  select(season, title, total_votes) |>
+  arrange(desc(total_votes)) |>
+  head(10)
 
 most_votes
 ```
@@ -40,11 +40,11 @@ most_votes
 |      2 | The Injury            |        3282 |
 
 ``` r
-highest_ratings <- 
-    office_ratings |>
-    select(season, title, imdb_rating) |>
-    arrange(desc(imdb_rating)) |>
-    head(10)
+highest_ratings <-
+  office_ratings |>
+  select(season, title, imdb_rating) |>
+  arrange(desc(imdb_rating)) |>
+  head(10)
 
 highest_ratings
 ```
@@ -70,12 +70,14 @@ audience (i.e., the total number of votes).
 
 ``` r
 audience_season_ratings <-
-office_ratings |>
-    group_by(season) |>
-    summarise("number_of_episodes" = n_distinct(episode),
-                        "average_season_rating" = round(mean(imdb_rating), digits = 1)) |>
-    ungroup() |>
-    arrange(desc(average_season_rating))
+  office_ratings |>
+  group_by(season) |>
+  summarise(
+    "number_of_episodes" = n_distinct(episode),
+    "average_season_rating" = round(mean(imdb_rating), digits = 1)
+  ) |>
+  ungroup() |>
+  arrange(desc(average_season_rating))
 
 audience_season_ratings
 ```
@@ -100,11 +102,13 @@ on changed across the seasons?
 
 ``` r
 audience_engagement <-
-    office_ratings |>
-    group_by(season) |>
-    summarise("number_of_episodes" = n_distinct(episode),
-                        "average_rating_engagement" = sum(total_votes)) |>
-    arrange(desc(average_rating_engagement))
+  office_ratings |>
+  group_by(season) |>
+  summarise(
+    "number_of_episodes" = n_distinct(episode),
+    "average_rating_engagement" = sum(total_votes)
+  ) |>
+  arrange(desc(average_rating_engagement))
 
 audience_engagement
 ```
@@ -128,12 +132,12 @@ ratings.
 engagement on IMDB?
 
 ``` r
-
 audience_analysis <-
-    inner_join(audience_season_ratings, 
-                         audience_engagement, 
-                         by = c("season", "number_of_episodes")) |>
-    arrange(season)
+  inner_join(audience_season_ratings,
+    audience_engagement,
+    by = c("season", "number_of_episodes")
+  ) |>
+  arrange(season)
 
 audience_analysis
 ```
@@ -152,18 +156,24 @@ audience_analysis
 
 ``` r
 audience_analysis |>
-    mutate(season = factor(season),
-                 average_season_rating = factor(average_season_rating)) |>
-    ggplot(aes(season, average_rating_engagement,  fill = average_season_rating)) +
-    geom_col() +
-    expand_limits(x = 1:9) +
-    labs(x = "The Office season",
-             y = "Average rating engagement (total IMDB ratings/season",
-             fill = "Average season rating\n (mean IMDB rating per season)",
-             title = "The Office seasons 1-9 - audience engagement and reception") +
-    theme(plot.title = element_text(face = "bold"),
-                legend.position = "right") +
-    scale_fill_discrete(guide = guide_legend(reverse = TRUE))
+  mutate(
+    season = factor(season),
+    average_season_rating = factor(average_season_rating)
+  ) |>
+  ggplot(aes(season, average_rating_engagement, fill = average_season_rating)) +
+  geom_col() +
+  expand_limits(x = 1:9) +
+  labs(
+    x = "The Office season",
+    y = "Average rating engagement (total IMDB ratings/season",
+    fill = "Average season rating\n (mean IMDB rating per season)",
+    title = "The Office seasons 1-9 - audience engagement and reception"
+  ) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "right"
+  ) +
+  scale_fill_discrete(guide = guide_legend(reverse = TRUE))
 ```
 
 ![](README_files/figure-commonmark/unnamed-chunk-8-1.png)
