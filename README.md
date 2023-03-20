@@ -177,3 +177,5 @@ audience_analysis |>
 ```
 
 ![](README_files/figure-commonmark/unnamed-chunk-8-1.png)
+
+![](the_office_season_audience_plot.png)
